@@ -1,9 +1,15 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: dario_swain
- * Date: 8/4/14
- * Time: 4:00 PM
+ * This file is part of the Wall Poster bundle.
+ *
+ * (c) Ilya Pokamestov
+ *
+ * @author Ilya Pokamestov
+ * @email dario_swain@yahoo.com
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Justy\Bundle\WallPosterBundle\Post;
@@ -61,11 +67,15 @@ class Post
 
     public function getSocialTagsText()
     {
-        $text = "\n\n";
-        foreach ($this->tags as $tag)
+        if($this->tags)
         {
-            $text .= ' #' . str_replace(' ', '_', $tag);
+            $text = "\n\n";
+            foreach ($this->tags as $tag)
+            {
+                $text .= ' #' . str_replace(' ', '_', $tag);
+            }
+            return html_entity_decode($text);
         }
-        return html_entity_decode($text);
+        return false;
     }
 } 

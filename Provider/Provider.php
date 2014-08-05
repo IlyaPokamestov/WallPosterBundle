@@ -1,9 +1,15 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: dario_swain
- * Date: 8/4/14
- * Time: 4:14 PM
+ * This file is part of the Wall Poster bundle.
+ *
+ * (c) Ilya Pokamestov
+ *
+ * @author Ilya Pokamestov
+ * @email dario_swain@yahoo.com
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Justy\Bundle\WallPosterBundle\Provider;
@@ -26,10 +32,11 @@ abstract class Provider
 
     protected function request($url, array $post = array())
     {
-        $curlInstance = curl_init();
+        $curlInstance = curl_init($url);
 
-        curl_setopt($curlInstance, CURLOPT_URL, $url);
         curl_setopt($curlInstance, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curlInstance, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($curlInstance, CURLOPT_SSL_VERIFYHOST, FALSE);
 
         if($post && is_array($post))
         {

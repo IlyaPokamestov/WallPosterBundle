@@ -1,14 +1,20 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: dario_swain
- * Date: 8/4/14
- * Time: 4:14 PM
+ * This file is part of the Wall Poster bundle.
+ *
+ * (c) Ilya Pokamestov
+ *
+ * @author Ilya Pokamestov
+ * @email dario_swain@yahoo.com
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Justy\Bundle\WallPosterBundle\Provider;
 
-
+use Justy\Bundle\WallPosterBundle\Exception\VkException;
 use Justy\Bundle\WallPosterBundle\Post\Post;
 
 class VkProvider extends Provider
@@ -33,38 +39,63 @@ class VkProvider extends Provider
 
     public function publish(Post $post)
     {
+        //TODO: Check captcha error in cache before make requests
+
+        try
+        {
+            //TODO: Fire event before send wall.post request
+
+            $groupPost = $this->makeApiRequest('wall.post',array(
+                'owner_id' => -$this->groupId,
+                'from_group' => 1,
+                'message' => $post->getMessage().$post->getSocialTagsText(),
+                'attachments' => $this->prepareAttachments($post),
+            ));
+
+            //TODO: Fire event after send wall.post request
+
+            return $groupPost->post_id;
+        }
+        catch(VkException $ex)
+        {
+            var_dump($ex);
+            //TODO: Notify about exception
+            //TODO:If error is captcha required then make cache
+        }
+
+        return false;
+    }
+
+    protected function prepareAttachments(Post $post)
+    {
         $attachments = false;
         if($post->getImages())
         {
             $uploadServer = $this->makeApiRequest('photos.getWallUploadServer', array('group_id' => $this->groupId));
             $uploadURL = $uploadServer->upload_url;
 
-            $imageIds = array();
+            $images = array();
             foreach($post->getImages() as $imageUrl)
             {
-                $uploadedPhoto = $this->request($uploadURL,array('photo' => '@'.$imageUrl));
+                $uploadedPhoto = json_decode($this->request($uploadURL,array('photo' => '@'.$imageUrl)));
                 $savedImage = $this->makeApiRequest('photos.saveWallPhoto', array(
                     'group_id' => $this->groupId,
                     'photo' => $uploadedPhoto->photo,
                     'server' => $uploadedPhoto->server,
                     'hash' => $uploadedPhoto->hash,
                 ));
-                $imageIds[] = $savedImage->id;
+                $images[] = 'photo'.$savedImage[0]->owner_id.'_'.$savedImage[0]->id;
             }
 
-            $attachments = implode(',',$imageIds);
+            $attachments = implode(',',$images);
         }
 
-        $attachments .= $attachments ? ','.$post->getLink() : $post->getLink();
+        if($post->getLink())
+        {
+            $attachments .= $attachments ? ','.$post->getLink() : $post->getLink();
+        }
 
-        $groupPost = $this->makeApiRequest('wall.post',array(
-                'owner_id' => -$this->groupId,
-                'from_group' => 1,
-                'message' => $post->getMessage().$post->getSocialTagsText(),
-                'attachments' => $attachments,
-        ));
-
-        return $groupPost->post_id;
+        return $attachments;
     }
 
     protected function makeApiRequest($method, array $get = array(), array $post = array())
@@ -88,6 +119,18 @@ class VkProvider extends Provider
 
         $url = self::API_URL . $method . '?' . $query;
         $result = json_decode($this->request($url,$post));
+
+        if(isset($result->error))
+        {
+            if($result->error->error_code == 14)
+            {
+                throw new VkException($result->error->error_msg, $result->error->error_code, null, $result->error->captcha_sid, $result->error->captcha_img);
+            }
+            else
+            {
+                throw new VkException($result->error->error_msg, $result->error->error_code);
+            }
+        }
 
         if (isset($result->response))
         {
