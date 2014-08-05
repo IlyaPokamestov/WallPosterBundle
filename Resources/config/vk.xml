@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+           http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="wall_poster.vk.class">Justy\Bundle\WallPosterBundle\Provider\VkProvider</parameter>
+    </parameters>
+
+    <services>
+        <service id="wall_poster.vk" class="%wall_poster.vk.class%">
+            <argument key="accessToken">%wall_poster.vk.access_token%</argument>
+            <argument key="groupId">%wall_poster.vk.group_id%</argument>
+            <argument key="apiVersion">%wall_poster.vk.api_version%</argument>
+            <argument key="lang">%wall_poster.vk.lang%</argument>
+        </service>
+    </services>
+
+</container>
