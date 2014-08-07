@@ -23,6 +23,10 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class JustyWallPosterExtension extends Extension
 {
+	protected $availableServices = array(
+		'vk','facebook','twitter'
+	);
+
     protected $configDirectory = '/../Resources/config';
     protected $configFiles = array(
         'services',
@@ -50,11 +54,19 @@ class JustyWallPosterExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator($this->getConfigurationDirectory()));
 
-        if(isset($config['vk']))
-        {
-            $this->mapParameters('vk', $config['vk'], $container);
-            $this->loadConfigurationFile('vk',$loader);
-        }
+		foreach($this->availableServices as $service)
+		{
+			if(isset($config[$service]))
+			{
+				$this->mapParameters($service, $config[$service], $container);
+				$this->loadConfigurationFile($service,$loader);
+			}
+		}
+
+//		if(!$container->hasParameter('wall_poster.facebook.access_token'))
+//		{
+//			$container->setParameter('wall_poster.facebook.access_token',false);
+//		}
 
         return array($config, $loader);
     }

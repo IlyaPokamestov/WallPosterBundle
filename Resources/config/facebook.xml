@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  This file is part of the Wall Poster bundle.
+
+  (c) Ilya Pokamestov
+
+  @author Ilya Pokamestov
+  @email dario_swain@yahoo.com
+
+  For the full copyright and license information, please view the LICENSE
+  file that was distributed with this source code.
+
+ -->
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+           http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="wall_poster.facebook.class">Justy\Bundle\WallPosterBundle\Provider\FacebookProvider</parameter>
+    </parameters>
+
+    <services>
+        <service id="wall_poster.facebook" class="%wall_poster.facebook.class%">
+            <argument key="page">%wall_poster.facebook.page%</argument>
+            <argument key="appId">%wall_poster.facebook.app_id%</argument>
+            <argument key="appSecret">%wall_poster.facebook.app_secret%</argument>
+            <argument key="accessToken">%wall_poster.facebook.access_token%</argument>
+        </service>
+    </services>
+
+</container>
