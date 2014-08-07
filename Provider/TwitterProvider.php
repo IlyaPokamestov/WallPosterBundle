@@ -17,6 +17,8 @@ use WallPosterBundle\Post\Post;
 
 class TwitterProvider extends Provider
 {
+	const MAX_TWEET_LENGTH = 140;
+
 	protected $twitterOauth;
 
 	public function __construct($apiKey ,$apiSecret, $accessToken, $accessSecret)

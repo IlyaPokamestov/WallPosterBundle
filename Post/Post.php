@@ -20,6 +20,7 @@ class Post
     protected $link;
     protected $images = array();
     protected $tags = array();
+	protected $location;
 
     public function setMessage($message)
     {
@@ -43,7 +44,13 @@ class Post
         return $this->link;
     }
 
-    public function addImage($image)
+	public function createImage($pathToFile, $browserUrl)
+	{
+		$this->images[] = new PostImage($pathToFile,$browserUrl);
+		return $this;
+	}
+
+    public function addImage(PostImage $image)
     {
         $this->images[] = $image;
         return $this;
@@ -64,6 +71,23 @@ class Post
     {
         return $this->tags;
     }
+
+	public function createLocation($latitude, $longitude)
+	{
+		$this->location = new PostLocation($latitude, $longitude);
+		return $this;
+	}
+
+	public function setLocation(PostLocation $location)
+	{
+		$this->location = $location;
+		return $this;
+	}
+
+	public function getLocation()
+	{
+		return $this->location;
+	}
 
     public function getSocialTagsText()
     {
