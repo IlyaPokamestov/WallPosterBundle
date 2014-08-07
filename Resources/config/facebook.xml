@@ -20,7 +20,7 @@
            http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="wall_poster.facebook.class">Justy\Bundle\WallPosterBundle\Provider\FacebookProvider</parameter>
+        <parameter key="wall_poster.facebook.class">WallPosterBundle\Provider\FacebookProvider</parameter>
     </parameters>
 
     <services>

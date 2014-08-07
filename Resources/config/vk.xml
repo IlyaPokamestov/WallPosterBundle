@@ -20,7 +20,7 @@
            http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="wall_poster.vk.class">Justy\Bundle\WallPosterBundle\Provider\VkProvider</parameter>
+        <parameter key="wall_poster.vk.class">WallPosterBundle\Provider\VkProvider</parameter>
     </parameters>
 
     <services>

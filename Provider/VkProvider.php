@@ -12,10 +12,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Justy\Bundle\WallPosterBundle\Provider;
+namespace WallPosterBundle\Provider;
 
-use Justy\Bundle\WallPosterBundle\Exception\VkException;
-use Justy\Bundle\WallPosterBundle\Post\Post;
+use WallPosterBundle\Exception\VkException;
+use WallPosterBundle\Post\Post;
 
 class VkProvider extends Provider
 {

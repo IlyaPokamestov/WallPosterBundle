@@ -12,7 +12,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Justy\Bundle\WallPosterBundle\Exception;
+namespace WallPosterBundle\Exception;
 
 
 class VkException extends \Exception

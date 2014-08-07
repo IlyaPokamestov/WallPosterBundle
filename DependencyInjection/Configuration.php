@@ -12,7 +12,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Justy\Bundle\WallPosterBundle\DependencyInjection;
+namespace WallPosterBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

@@ -12,10 +12,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Justy\Bundle\WallPosterBundle;
+namespace WallPosterBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class JustyWallPosterBundle extends Bundle
+class WallPosterBundle extends Bundle
 {
 }

@@ -11,9 +11,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Justy\Bundle\WallPosterBundle\Provider;
+namespace WallPosterBundle\Provider;
 
-use Justy\Bundle\WallPosterBundle\Post\Post;
+use WallPosterBundle\Post\Post;
 
 class TwitterProvider extends Provider
 {

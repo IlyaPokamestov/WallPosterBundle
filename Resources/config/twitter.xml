@@ -20,7 +20,7 @@
            http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="wall_poster.twitter.class">Justy\Bundle\WallPosterBundle\Provider\TwitterProvider</parameter>
+        <parameter key="wall_poster.twitter.class">WallPosterBundle\Provider\TwitterProvider</parameter>
     </parameters>
 
     <services>
