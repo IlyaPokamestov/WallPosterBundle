@@ -16,33 +16,33 @@ namespace WallPosterBundle\Post;
 
 class Post
 {
-    protected $message;
-    protected $link;
-    protected $images = array();
-    protected $tags = array();
+	protected $message;
+	protected $link;
+	protected $images = array();
+	protected $tags = array();
 	protected $location;
 
-    public function setMessage($message)
-    {
-        $this->message = $message;
-        return $this;
-    }
+	public function setMessage($message)
+	{
+		$this->message = $message;
+		return $this;
+	}
 
-    public function getMessage()
-    {
-        return $this->message;
-    }
+	public function getMessage()
+	{
+		return $this->message;
+	}
 
-    public function setLink($link)
-    {
-        $this->link = $link;
-        return $this;
-    }
+	public function setLink($link)
+	{
+		$this->link = $link;
+		return $this;
+	}
 
-    public function getLink()
-    {
-        return $this->link;
-    }
+	public function getLink()
+	{
+		return $this->link;
+	}
 
 	public function createImage($pathToFile, $browserUrl)
 	{
@@ -50,27 +50,33 @@ class Post
 		return $this;
 	}
 
-    public function addImage(PostImage $image)
-    {
-        $this->images[] = $image;
-        return $this;
-    }
+	public function addImage(PostImage $image)
+	{
+		$this->images[] = $image;
+		return $this;
+	}
 
-    public function getImages()
-    {
-        return $this->images;
-    }
+	public function getImages()
+	{
+		return $this->images;
+	}
 
-    public function addTag($tag)
-    {
-        $this->tags[] = $tag;
-        return $this;
-    }
+	public function setImages($images)
+	{
+		$this->images = $images;
+		return $this;
+	}
 
-    public function getTags()
-    {
-        return $this->tags;
-    }
+	public function addTag($tag)
+	{
+		$this->tags[] = $tag;
+		return $this;
+	}
+
+	public function getTags()
+	{
+		return $this->tags;
+	}
 
 	public function createLocation($latitude, $longitude)
 	{
@@ -89,17 +95,17 @@ class Post
 		return $this->location;
 	}
 
-    public function getSocialTagsText()
-    {
-        if($this->tags)
-        {
-            $text = "\n\n";
-            foreach ($this->tags as $tag)
-            {
-                $text .= ' #' . str_replace(' ', '_', $tag);
-            }
-            return html_entity_decode($text);
-        }
-        return false;
-    }
+	public function getSocialTagsText()
+	{
+		if($this->tags)
+		{
+			$text = "\n\n";
+			foreach ($this->tags as $tag)
+			{
+				$text .= ' #' . str_replace(' ', '_', $tag);
+			}
+			return html_entity_decode($text);
+		}
+		return false;
+	}
 } 
