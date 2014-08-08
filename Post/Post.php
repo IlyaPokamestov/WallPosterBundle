@@ -17,6 +17,7 @@ namespace WallPosterBundle\Post;
 class Post
 {
 	protected $message;
+	/** @var  PostLink */
 	protected $link;
 	protected $images = array();
 	protected $tags = array();
@@ -33,7 +34,13 @@ class Post
 		return $this->message;
 	}
 
-	public function setLink($link)
+	public function createLink($url)
+	{
+		$this->link = new PostLink($url);
+		return $this;
+	}
+
+	public function setLink(PostLink $link)
 	{
 		$this->link = $link;
 		return $this;
