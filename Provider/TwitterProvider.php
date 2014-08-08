@@ -15,41 +15,68 @@ namespace WallPosterBundle\Provider;
 
 use WallPosterBundle\Post\Post;
 use WallPosterBundle\Post\PostImage;
+use WallPosterBundle\WallPosterBundle;
 
 class TwitterProvider extends Provider
 {
-	const MAX_TWEET_LENGTH = 140;
-
 	/** @var \Twitter */
 	protected $twitterOauth;
+	/** @var \stdClass */
 	protected $configuration = null;
 
+	/**
+	 * @param string $apiKey
+	 * @param string $apiSecret
+	 * @param string $accessToken
+	 * @param string $accessSecret
+	 */
 	public function __construct($apiKey ,$apiSecret, $accessToken, $accessSecret)
 	{
 		$this->twitterOauth = new \Twitter($apiKey ,$apiSecret, $accessToken, $accessSecret);
-		if (!$this->twitterOauth->authenticate()) {
-			//TODO:throw Exception???
-		}
 	}
 
+	/**
+	 * @param Post $post
+	 * @return Post
+	 * @throws \TwitterException
+	 */
 	public function publish(Post $post)
 	{
-		if($this->twitterOauth)
-		{
-			$post = $this->preparePost($post);
-			$media = null;
-			if($post->getImages())
-			{
-				$images = $post->getImages();
-				/** @var PostImage $media */
-				$media = array_shift($images);
-				$media = $media->getFilePath();
-			}
-			return $this->twitterOauth->send($post->getMessage().' '.$post->getLink()->getUrl(), $media);
+		if (!$this->twitterOauth->authenticate()) {
+			throw new \TwitterException('Authentication failed to twitter application.');
 		}
-		return false;
+
+		$status = $post->getTwitterMessage(
+			$this->getShortUrlLength(),
+			$this->getShortUrlLength(true),
+			$this->getMaxMediaToUpload(),
+			$this->getCharactersPerMedia()
+		);
+		$media = null;
+		if($post->getImages())
+		{
+			$images = $post->getImages();
+			/** @var PostImage $media */
+			$media = array_shift($images);
+			$media = $media->getFilePath();
+		}
+
+		$postResponse = $this->twitterOauth->send($status, $media);
+
+		if(isset($postResponse->errors))
+		{
+			throw new \TwitterException($postResponse->errors->message, $postResponse->errors->code);
+		}
+
+		$post->addPublishInformation(WallPosterBundle::TWITTER_PROVIDER, $postResponse);
+
+		return $post;
 	}
 
+	/**
+	 * @return \stdClass
+	 * @throws \TwitterException
+	 */
 	protected function getConfiguration()
 	{
 		if($this->configuration)
@@ -60,63 +87,16 @@ class TwitterProvider extends Provider
 
 		if(isset($this->configuration->errors))
 		{
-			//TODO: throw exceptions
+			throw new \TwitterException($this->configuration->errors->message, $this->configuration->errors->code);
 		}
 
 		return $this->configuration;
 	}
 
-	//TODO: Add tags
-	protected function preparePost(Post $post)
-	{
-		$messageSize = strlen($post->getMessage());
-		$linkSize = $post->getLink()->getUrl() ? $this->getShortUrlLength($post->getLink()->isHttps()) + 1 : 0;
-
-		if(($messageSize + $linkSize) >= self::MAX_TWEET_LENGTH)
-		{
-			$messageOffset = (($messageSize + $linkSize) - self::MAX_TWEET_LENGTH);
-			if($post->getImages())
-			{
-				$messageOffset += $this->getCharactersPerMedia();
-			}
-			$post->setMessage(trim(mb_substr($post->getMessage(),0,strlen($post->getMessage() - ($messageOffset + 3)))).'...');
-		}
-
-		return $this->preparePostMedia($post);
-	}
-
-	protected function preparePostMedia(Post $post)
-	{
-		if($post->getImages())
-		{
-			$messageSize = strlen($post->getMessage()) + ($post->getLink()->getUrl() ? $this->getShortUrlLength($post->getLink()->isHttps()) : 0);
-
-			$images = array_slice($post->getImages(),0,$this->getMaxMediaToUpload());
-			if(count($images) > 1)
-			{
-				$imagesToPublish = array();
-				foreach($images as $image)
-				{
-					if(($messageSize + ($imagesToPublish + 1) * $this->getCharactersPerMedia()) <= self::MAX_TWEET_LENGTH)
-					{
-						$imagesToPublish[] = $image;
-					}
-					else
-					{
-						break;
-					}
-				}
-			}
-			else
-			{
-				$imagesToPublish = array(array_shift($images));
-			}
-
-			$post->setImages($imagesToPublish);
-		}
-		return $post;
-	}
-
+	/**
+	 * @param bool $https
+	 * @return int
+	 */
 	protected function getShortUrlLength($https = false)
 	{
 		if($https)
@@ -126,11 +106,13 @@ class TwitterProvider extends Provider
 		return $this->getConfiguration()->short_url_length;
 	}
 
+	/** @return int */
 	protected function getMaxMediaToUpload()
 	{
 		return $this->getConfiguration()->max_media_per_upload;
 	}
 
+	/** @return int */
 	protected function getCharactersPerMedia()
 	{
 		return $this->getConfiguration()->characters_reserved_per_media;
