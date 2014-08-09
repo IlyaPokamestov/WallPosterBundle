@@ -1,0 +1,5 @@
+wall-poster:
+    submit: Submit
+    captcha_value: Enter value from captcha
+    handler_not_found: Handler service not found!
+    unknown_error: Captcha validation not needed

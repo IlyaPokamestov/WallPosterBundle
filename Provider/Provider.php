@@ -18,24 +18,22 @@ use WallPosterBundle\Post\Post;
 
 abstract class Provider
 {
-    const TYPE_VK = 'vk';
-    const TYPE_FACEBOOK = 'facebook';
-    const TYPE_TWITTER = 'twitter';
-
-    protected $type;
-
-    protected function getType()
-    {
-        return $this->type;
-    }
-
-    protected function request($url, array $post = array())
+	/**
+	 * TODO: Replace to VkProvider?
+	 *
+	 * @param string $url
+	 * @param array $post
+	 * @return string
+	 * @throws \Exception
+	 */
+	protected function request($url, array $post = array())
     {
         $curlInstance = curl_init($url);
 
         curl_setopt($curlInstance, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curlInstance, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($curlInstance, CURLOPT_SSL_VERIFYHOST, FALSE);
+		curl_setopt($curlInstance, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
 
         if($post && is_array($post))
         {
@@ -54,5 +52,11 @@ abstract class Provider
         return $response;
     }
 
-    abstract public function publish(Post $post);
+	/**
+	 * Public post to social network
+	 *
+	 * @param Post $post
+	 * @return Post
+	 */
+	abstract public function publish(Post $post);
 } 

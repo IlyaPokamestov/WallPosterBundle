@@ -21,14 +21,20 @@
 
     <parameters>
         <parameter key="wall_poster.vk.class">WallPosterBundle\Provider\VkProvider</parameter>
+        <parameter key="wall_poster.captcha_handler.class">WallPosterBundle\Handler\CaptchaHandler</parameter>
     </parameters>
 
     <services>
+        <service id="wall_poster.captcha_handler" class="%wall_poster.captcha_handler.class%">
+            <argument key="cacheDirectory">%kernel.cache_dir%/wall_poster/</argument>
+        </service>
+
         <service id="wall_poster.vk" class="%wall_poster.vk.class%">
             <argument key="accessToken">%wall_poster.vk.access_token%</argument>
             <argument key="groupId">%wall_poster.vk.group_id%</argument>
             <argument key="apiVersion">%wall_poster.vk.api_version%</argument>
             <argument key="lang">%wall_poster.vk.lang%</argument>
+            <argument type="service" id="wall_poster.captcha_handler" />
         </service>
     </services>
 

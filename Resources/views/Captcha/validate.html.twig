@@ -1,0 +1,26 @@
+{% if message %}
+
+{% elseif form is defined %}
+
+<form action="{{ path('validate_captcha') }}" method="post" class="form-horizontal" novalidate>
+    {% if success is defined %}
+        <h5 style="color: #008000">{{ 'wall-poster.success'|trans }}</h5>
+    {% endif %}
+    <img src="{{ captcha.image }}" />
+    {{ form_errors(form) }}
+    <fieldset>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form_row(form.value) }}
+            </div>
+        </div>
+    </fieldset>
+    {{ form_widget(form._token) }}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-lg"><i class="icon-ok"></i> {{ 'wall-poster.submit'|trans }}</button>
+    </div>
+</form>
+
+{% else %}
+    {{ 'wall-poster.unknown_error'|trans }}
+{% endif %}

@@ -20,13 +20,10 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use WallPosterBundle\WallPosterBundle;
 
 class WallPosterExtension extends Extension
 {
-	protected $availableServices = array(
-		'vk','facebook','twitter'
-	);
-
     protected $configDirectory = '/../Resources/config';
     protected $configFiles = array(
         'services',
@@ -54,7 +51,7 @@ class WallPosterExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator($this->getConfigurationDirectory()));
 
-		foreach($this->availableServices as $service)
+		foreach(WallPosterBundle::getAvailableProviders() as $service)
 		{
 			if(isset($config[$service]))
 			{
@@ -62,11 +59,6 @@ class WallPosterExtension extends Extension
 				$this->loadConfigurationFile($service,$loader);
 			}
 		}
-
-//		if(!$container->hasParameter('wall_poster.facebook.access_token'))
-//		{
-//			$container->setParameter('wall_poster.facebook.access_token',false);
-//		}
 
         return array($config, $loader);
     }

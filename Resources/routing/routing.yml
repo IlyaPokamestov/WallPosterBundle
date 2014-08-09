@@ -1,0 +1,3 @@
+validate_captcha:
+    path: /wall-poster/captcha
+    defaults: { _controller: WallPosterBundle:Captcha:validate }
