@@ -1,7 +1,7 @@
 WallPosterBundle
 ================
 
-The **WallPosterBundle** bundle allows you to post you site news in you social groups, pages or timelines.
+The **WallPosterBundle** bundle allows you to post your site news in your social groups, pages or timelines.
 
 Installation
 ------------
